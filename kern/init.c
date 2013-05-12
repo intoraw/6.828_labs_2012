@@ -6,6 +6,7 @@
 
 #include <kern/monitor.h>
 #include <kern/console.h>
+#include <kern/zork.h>
 
 // Test the stack backtrace function (lab 1 only)
 void
@@ -37,6 +38,9 @@ i386_init(void)
 
 	// Test the stack backtrace function (lab 1 only)
 	test_backtrace(5);
+
+    // zork test
+//    test_zork();
 
 	// Drop into the kernel monitor.
 	while (1)
@@ -90,3 +94,12 @@ _warn(const char *file, int line, const char *fmt,...)
 	cprintf("\n");
 	va_end(ap);
 }
+
+
+void 
+test_zork(){
+    cprintf("test_zork\n");
+    cprintf("x=%d y=%d\n", 3);
+}
+
+

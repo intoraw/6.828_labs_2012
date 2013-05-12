@@ -12,6 +12,9 @@
 #include <kern/kdebug.h>
 
 #define CMDBUF_SIZE	80	// enough for one VGA text line
+#define EBP(_ebp_addr) ((uint32_t) _ebp_addr)
+#define EIP(_ebp_addr) (*((_ebp_addr)+1))
+#define ARG(_ebp_addr, _cnt) (*((_ebp_addr)+(_cnt)+2))
 
 
 struct Command {
@@ -24,6 +27,7 @@ struct Command {
 static struct Command commands[] = {
 	{ "help", "Display this list of commands", mon_help },
 	{ "kerninfo", "Display information about the kernel", mon_kerninfo },
+    { "backtrace", "Display current calling stack", mon_backtrace},
 };
 #define NCOMMANDS (sizeof(commands)/sizeof(commands[0]))
 
@@ -59,6 +63,17 @@ int
 mon_backtrace(int argc, char **argv, struct Trapframe *tf)
 {
 	// Your code here.
+    uint32_t *addr = NULL;
+    
+    addr = (uint32_t*) read_ebp();
+    cprintf("Stack backtrace:\n");
+    while ( addr != NULL ) {
+        cprintf("  ebp %08x eip %08x args %08x %08x %08x %08x %08x\n", EBP(addr),
+            EIP(addr), ARG(addr, 0), ARG(addr, 1), ARG(addr, 2), ARG(addr, 3), 
+            ARG(addr, 4));
+        // get the caller's ebp
+        addr = (uint32_t*) *addr;
+    }
 	return 0;
 }
 
