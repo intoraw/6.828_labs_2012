@@ -64,13 +64,21 @@ mon_backtrace(int argc, char **argv, struct Trapframe *tf)
 {
 	// Your code here.
     uint32_t *addr = NULL;
-    
+    struct Eipdebuginfo info;
+
     addr = (uint32_t*) read_ebp();
     cprintf("Stack backtrace:\n");
     while ( addr != NULL ) {
-        cprintf("  ebp %08x eip %08x args %08x %08x %08x %08x %08x\n", EBP(addr),
-            EIP(addr), ARG(addr, 0), ARG(addr, 1), ARG(addr, 2), ARG(addr, 3), 
-            ARG(addr, 4));
+        cprintf ("  ebp %08x eip %08x args %08x %08x %08x %08x %08x\n", EBP (addr),
+            EIP (addr), ARG (addr, 0), ARG (addr, 1), ARG (addr, 2), ARG (addr, 3), 
+            ARG (addr, 4));
+        debuginfo_eip (EIP (addr), &info);
+        cprintf ("         %s:%d: %.*s+%d\n", 
+                    info.eip_file, 
+                    info.eip_line,
+                    info.eip_fn_namelen, 
+                    info.eip_fn_name,
+                    EIP (addr) - info.eip_fn_addr);
         // get the caller's ebp
         addr = (uint32_t*) *addr;
     }
