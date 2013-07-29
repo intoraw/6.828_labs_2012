@@ -98,8 +98,19 @@ boot_alloc(uint32_t n)
 	// to a multiple of PGSIZE.
 	//
 	// LAB 2: Your code here.
-
-	return NULL;
+  result = nextfree;
+  if (n > 0) {
+    uintptr_t va_end = (uintptr_t) ROUNDUP((char*) ((uintptr_t) nextfree + (uintptr_t) n), PGSIZE);
+    if (va_end > (uintptr_t)KERNBASE  && 
+       va_end < (uintptr_t)KERNBASE + 0x400000) {
+      nextfree = (char *) va_end;
+    } else {
+      panic("We are out of memory at [KERNBASE, KERNBASE + 4MB].");
+    }
+  } else if (n < 0) {
+    panic("cannot alloc negative number of bytes!");
+  }
+	return (void *) result;
 }
 
 // Set up a two-level page table:
