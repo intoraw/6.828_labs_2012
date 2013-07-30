@@ -45,7 +45,8 @@ i386_detect_memory(void)
 		npages = (EXTPHYSMEM / PGSIZE) + npages_extmem;
 	else
 		npages = npages_basemem;
-
+  
+  cprintf("%d %d %d\n", npages , npages_basemem, npages_extmem);
 	cprintf("Physical memory: %uK available, base = %uK, extended = %uK\n",
 		npages * PGSIZE / 1024,
 		npages_basemem * PGSIZE / 1024,
@@ -132,7 +133,7 @@ mem_init(void)
 	i386_detect_memory();
 
 	// Remove this line when you're ready to test this function.
-	panic("mem_init: This function is not finished\n");
+	//panic("mem_init: This function is not finished\n");
 
 	//////////////////////////////////////////////////////////////////////
 	// create initial page directory.
@@ -306,13 +307,13 @@ page_alloc(int alloc_flags)
 {
   // remove from page_free_list
   if (!page_free_list) {
-    cprintf("Out of physical memory.\n");
+    //cprintf("Out of physical memory.\n");
     return NULL;
   }
 
   struct PageInfo * ret ;
   ret = page_free_list;
-  page_free_list = ret.pp_link;
+  page_free_list = ret->pp_link;
 
   // check alloc_flags
   if (alloc_flags & ALLOC_ZERO) {
@@ -334,7 +335,7 @@ page_free(struct PageInfo *pp)
     panic("pp_ref should be 0.\n");
   }
 
-  pp->link = page_free_list;
+  pp->pp_link = page_free_list;
   page_free_list = pp;
 }
 
