@@ -304,8 +304,23 @@ page_init(void)
 struct PageInfo *
 page_alloc(int alloc_flags)
 {
-	// Fill this function in
-	return 0;
+  // remove from page_free_list
+  if (!page_free_list) {
+    cprintf("Out of physical memory.\n");
+    return NULL;
+  }
+
+  struct PageInfo * ret ;
+  ret = page_free_list;
+  page_free_list = ret.pp_link;
+
+  // check alloc_flags
+  if (alloc_flags & ALLOC_ZERO) {
+    void * v = page2kva(ret);
+    memset(v, 0, PGSIZE);
+  }
+  
+	return ret;
 }
 
 //
@@ -315,7 +330,12 @@ page_alloc(int alloc_flags)
 void
 page_free(struct PageInfo *pp)
 {
-	// Fill this function in
+  if (pp->pp_ref != 0) {
+    panic("pp_ref should be 0.\n");
+  }
+
+  pp->link = page_free_list;
+  page_free_list = pp;
 }
 
 //
