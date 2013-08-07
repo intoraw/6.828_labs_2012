@@ -512,7 +512,22 @@ void
 page_remove(pde_t *pgdir, void *va)
 {
 	// Fill this function in
-}
+  struct PageInfo * pp;
+  pte_t * pte;
+  pp = page_lookup(pgdir, va, &pte);
+  if (!pp)
+    return ;
+  
+  // descrease ref count and free physical page
+  page_decref(pp);
+
+  // update page table entry
+  *pte = 0;
+  
+  // tlb things
+  tlb_invalidate(pgdir, va);
+
+} 
 
 //
 // Invalidate a TLB entry, but only if the page tables being
