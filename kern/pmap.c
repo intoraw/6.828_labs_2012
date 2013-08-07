@@ -417,7 +417,20 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 static void
 boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm)
 {
-	// Fill this function in
+  size_t pg_num = ROUNDUP(size, PGSIZE);
+  va = ROUNDUP(va, PGSIZE);
+  pa = ROUNDUP(pa, PGSIZE);
+  pte_t * pte;
+  while (pg_num --) { 
+    pte = pgdir_walk(pgdir, (void*)va, 1);
+    if (pte == 0)
+      panic("boot_map_region : pgdir_walk returns 0.\n");
+    if (*pte & PTE_P )
+      panic("boot_map_region : pte has already presents.\n");
+    *pte =  pa | perm | PTE_P;
+    va = va + PGSIZE;
+    pa = pa + PGSIZE;
+  }
 }
 
 //
