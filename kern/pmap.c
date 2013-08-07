@@ -375,8 +375,30 @@ page_decref(struct PageInfo* pp)
 pte_t *
 pgdir_walk(pde_t *pgdir, const void *va, int create)
 {
-	// Fill this function in
-	return NULL;
+  pde_t *pde;
+  pte_t *pgtab;
+  
+  pde = &pgdir[PDX(va)];
+  if (*pde & PTE_P) {
+    // KADDR(pa) : get the corresponding va of this pa.
+    // ( reversed va->pa mapping ) 
+    // understanding why we need KADDR and PADDR is very important : 
+    // note :
+    // 1. dereference, uintptr_t, physaddr_t 
+    // 2. the kernel, like any other software, cannot bypass virtual 
+    // memory translation and thus cannot directly load and store 
+    // to physical addresses.
+    // 3. the kernel has set up some page table that has the direct 
+    // mapping of va -> pa.
+    // read this :  
+    // http://pdos.csail.mit.edu/6.828/2012/labs/lab2/#Virtual--Linear--and-Physical-Addresses
+    pgtab = (pte_t*)KADDR(PTE_ADDR(*pde));
+  } else {
+    if (!create || (pgtab = (pte_t*)page_alloc(ALLOC_ZERO)) == 0)
+      return NULL;
+    *pde = PADDR(pgtab) | PTE_P | PTE_W | PTE_U;
+  }
+	return &pgtab[PTX(va)];
 }
 
 //
