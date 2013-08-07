@@ -391,6 +391,7 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
     // to physical addresses.
     // 3. the kernel has set up some page table that has the direct 
     // mapping of va -> pa.
+    // 4. all pointers in c are virtual address. 
     // read this :  
     // http://pdos.csail.mit.edu/6.828/2012/labs/lab2/#Virtual--Linear--and-Physical-Addresses
     pgtab = (pte_t*)KADDR(PTE_ADDR(*pde));
@@ -417,6 +418,7 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 static void
 boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm)
 {
+	// Fill this function in
   size_t pg_num = ROUNDUP(size, PGSIZE);
   va = ROUNDUP(va, PGSIZE);
   pa = ROUNDUP(pa, PGSIZE);
@@ -462,6 +464,7 @@ int
 page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm)
 {
 	// Fill this function in
+  
 	return 0;
 }
 
@@ -480,7 +483,14 @@ struct PageInfo *
 page_lookup(pde_t *pgdir, void *va, pte_t **pte_store)
 {
 	// Fill this function in
-	return NULL;
+  pte_t * pte;
+  pte = pgdir_walk(pgdir, va, 0);
+  if (!pte || !(*pte & PTE_P)) 
+    return NULL;
+  if (pte_store) 
+    *pte_store = pte;
+
+  return pa2page(PTE_ADDR(*pte));
 }
 
 //
