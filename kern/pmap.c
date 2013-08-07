@@ -464,7 +464,19 @@ int
 page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm)
 {
 	// Fill this function in
+  pte_t * pte;
+  pte = pgdir_walk(pgdir, va, 1);
+  if (!pte) 
+    return -E_NO_MEM;
+  // add referance count first ,and then remove, solving the re-inserte
+  // problem.
+  (pp-> pp_ref) ++;
+  if (*pte & PTE_P ) 
+    page_remove(pgdir, va);
   
+  *pte = page2pa(pp) | perm | PTE_P;
+  tlb_invalidate(pgdir, va);
+
 	return 0;
 }
 
