@@ -308,7 +308,7 @@ page_alloc(int alloc_flags)
   // remove from page_free_list
   if (!page_free_list) {
     //cprintf("Out of physical memory.\n");
-    return NULL;
+    return 0;
   }
 
   struct PageInfo * ret ;
