@@ -377,6 +377,7 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 {
   pde_t *pde;
   pte_t *pgtab;
+  struct PageInfo *pp;
   
   pde = &pgdir[PDX(va)];
   if (*pde & PTE_P) {
@@ -394,8 +395,10 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
     // http://pdos.csail.mit.edu/6.828/2012/labs/lab2/#Virtual--Linear--and-Physical-Addresses
     pgtab = (pte_t*)KADDR(PTE_ADDR(*pde));
   } else {
-    if (!create || (pgtab = (pte_t*)page_alloc(ALLOC_ZERO)) == 0)
-      return NULL;
+    if (!create || (pp = page_alloc(ALLOC_ZERO)) == 0)
+      return 0;
+    pp->pp_ref = 1;
+    pgtab = (pte_t*)KADDR(page2pa(pp));
     *pde = PADDR(pgtab) | PTE_P | PTE_W | PTE_U;
   }
 	return &pgtab[PTX(va)];
