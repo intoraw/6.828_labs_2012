@@ -102,14 +102,12 @@ boot_alloc(uint32_t n)
   result = nextfree;
   if (n > 0) {
     uintptr_t va_end = (uintptr_t) ROUNDUP((char*) ((uintptr_t) nextfree + (uintptr_t) n), PGSIZE);
-    if (va_end > (uintptr_t)KERNBASE  && 
-       va_end < (uintptr_t)KERNBASE + 0x400000) {
+    if (va_end > (uintptr_t)KERNBASE  && va_end < (uintptr_t)KERNBASE + 0x400000) 
       nextfree = (char *) va_end;
-    } else {
-      panic("We are out of memory at [KERNBASE, KERNBASE + 4MB].");
-    }
+    else 
+      panic("boot_alloc : We are out of memory at [KERNBASE, KERNBASE + 4MB].");
   } else if (n < 0) {
-    panic("cannot alloc negative number of bytes!");
+    panic("boot_alloc : cannot alloc negative number of bytes!");
   }
 	return (void *) result;
 }
