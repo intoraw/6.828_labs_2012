@@ -113,6 +113,7 @@ stab_binsearch(const struct Stab *stabs, int *region_left, int *region_right,
 int
 debuginfo_eip(uintptr_t addr, struct Eipdebuginfo *info)
 {
+<<<<<<< HEAD
 	const struct Stab *stabs, *stab_end;
 	const char *stabstr, *stabstr_end;
 	int lfile, rfile, lfun, rfun, lline, rline;
@@ -204,6 +205,8 @@ debuginfo_eip(uintptr_t addr, struct Eipdebuginfo *info)
 	//	Look at the STABS documentation and <inc/stab.h> to find
 	//	which one.
 	// Your code here.
+  stab_binsearch (stabs, &lline, &rline, N_SLINE, addr);
+  info->eip_line = stabs[lline].n_desc;
 
 
 	// Search backwards from the line number for the relevant filename

@@ -83,7 +83,10 @@ PERL	:= perl
 # Only optimize to -O1 to discourage inlining, which complicates backtraces.
 CFLAGS := $(CFLAGS) $(DEFS) $(LABDEFS) -O1 -fno-builtin -I$(TOP) -MD
 CFLAGS += -fno-omit-frame-pointer
-CFLAGS += -Wall -Wno-format -Wno-unused -Werror -gstabs -m32
+CFLAGS += -Wall -Wno-format -Wno-unused -Werror -gstabs -m32 
+
+# to resolve make error : undefined reference to `__umoddi3' 
+#CFLAGS += -fno-tree-scev-cprop
 
 # Add -fno-stack-protector if the option exists.
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
@@ -130,8 +133,11 @@ $(OBJDIR)/.vars.%: FORCE
 # Include Makefrags for subdirectories
 include boot/Makefrag
 include kern/Makefrag
+<<<<<<< HEAD
 include lib/Makefrag
 include user/Makefrag
+=======
+>>>>>>> lab2
 
 
 QEMUOPTS = -hda $(OBJDIR)/kern/kernel.img -serial mon:stdio -gdb tcp::$(GDBPORT)
@@ -193,7 +199,11 @@ grade:
 	  (echo "'make clean' failed.  HINT: Do you have another running instance of JOS?" && exit 1)
 	./grade-lab$(LAB) $(GRADEFLAGS)
 
+<<<<<<< HEAD
 handin: handin-check
+=======
+handin:
+>>>>>>> lab2
 	@if test -n "`git config remote.handin.url`"; then \
 		echo "Hand in to remote repository using 'git push handin HEAD' ..."; \
 		if ! git push -f handin HEAD; then \
@@ -234,6 +244,7 @@ tarball: handin-check
 handin-prep:
 	@./handin-prep
 
+<<<<<<< HEAD
 # For test runs
 
 prep-%:
@@ -250,6 +261,8 @@ run-%-nox: prep-% pre-qemu
 
 run-%: prep-% pre-qemu
 	$(QEMU) $(QEMUOPTS)
+=======
+>>>>>>> lab2
 
 # This magic automatically generates makefile dependencies
 # for header files included from C source files we compile,
