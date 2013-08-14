@@ -133,11 +133,8 @@ $(OBJDIR)/.vars.%: FORCE
 # Include Makefrags for subdirectories
 include boot/Makefrag
 include kern/Makefrag
-<<<<<<< HEAD
 include lib/Makefrag
 include user/Makefrag
-=======
->>>>>>> lab2
 
 
 QEMUOPTS = -hda $(OBJDIR)/kern/kernel.img -serial mon:stdio -gdb tcp::$(GDBPORT)
@@ -199,11 +196,7 @@ grade:
 	  (echo "'make clean' failed.  HINT: Do you have another running instance of JOS?" && exit 1)
 	./grade-lab$(LAB) $(GRADEFLAGS)
 
-<<<<<<< HEAD
 handin: handin-check
-=======
-handin:
->>>>>>> lab2
 	@if test -n "`git config remote.handin.url`"; then \
 		echo "Hand in to remote repository using 'git push handin HEAD' ..."; \
 		if ! git push -f handin HEAD; then \
@@ -244,7 +237,6 @@ tarball: handin-check
 handin-prep:
 	@./handin-prep
 
-<<<<<<< HEAD
 # For test runs
 
 prep-%:
@@ -261,8 +253,6 @@ run-%-nox: prep-% pre-qemu
 
 run-%: prep-% pre-qemu
 	$(QEMU) $(QEMUOPTS)
-=======
->>>>>>> lab2
 
 # This magic automatically generates makefile dependencies
 # for header files included from C source files we compile,

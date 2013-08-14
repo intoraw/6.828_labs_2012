@@ -113,7 +113,6 @@ stab_binsearch(const struct Stab *stabs, int *region_left, int *region_right,
 int
 debuginfo_eip(uintptr_t addr, struct Eipdebuginfo *info)
 {
-<<<<<<< HEAD
 	const struct Stab *stabs, *stab_end;
 	const char *stabstr, *stabstr_end;
 	int lfile, rfile, lfun, rfun, lline, rline;
