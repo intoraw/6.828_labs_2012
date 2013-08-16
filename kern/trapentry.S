@@ -47,9 +47,62 @@
  * Lab 3: Your code here for generating entry points for the different traps.
  */
 
+// check if has error code : http://pdos.csail.mit.edu/6.828/2012/readings/i386/s09_06.htm
+TRAPHANDLER_NOEC(idt_divide, T_DIVIDE) 
+TRAPHANDLER_NOEC(idt_debug, T_DEBUG) 
+TRAPHANDLER_NOEC(idt_nmi, T_NMI) 
+TRAPHANDLER_NOEC(idt_brkpt, T_BRKPT) 
+TRAPHANDLER_NOEC(idt_oflow, T_OFLOW) 
+TRAPHANDLER_NOEC(idt_bound, T_BOUND) 
+TRAPHANDLER_NOEC(idt_illop, T_ILLOP) 
+TRAPHANDLER_NOEC(idt_device, T_DEVICE) 
+TRAPHANDLER(idt_dblflt, T_DBLFLT)
+# idt_9  reserved
+TRAPHANDLER(idt_tss, T_TSS)
+TRAPHANDLER(idt_segnp, T_SEGNP)
+TRAPHANDLER(idt_stack, T_STACK)
+TRAPHANDLER(idt_gpflt, T_GPFLT)
+TRAPHANDLER(idt_pgflt, T_PGFLT)
+# idt_15 reserved
+TRAPHANDLER_NOEC(idt_fperr, T_FPERR) 
+TRAPHANDLER(idt_align, T_ALIGN) 
+TRAPHANDLER_NOEC(idt_mchk, T_MCHK) 
+TRAPHANDLER_NOEC(idt_simderr, T_SIMDERR) 
 
+TRAPHANDLER_NOEC(idt_syscall, T_SYSCALL)
+TRAPHANDLER(idt_default, T_DEFAULT) 
+
+# H/W IRQ
+TRAPHANDLER_NOEC(idt_irq_timer, IRQ_OFFSET + IRQ_TIMER)
+TRAPHANDLER_NOEC(idt_irq_kbd, IRQ_OFFSET + IRQ_KBD)
+TRAPHANDLER_NOEC(idt_irq_serial, IRQ_OFFSET + IRQ_SERIAL)
+TRAPHANDLER_NOEC(idt_irq_spurious, IRQ_OFFSET + IRQ_SPURIOUS)
+TRAPHANDLER_NOEC(idt_irq_ide, IRQ_OFFSET + IRQ_IDE)
+TRAPHANDLER_NOEC(idt_irq_error, IRQ_OFFSET + IRQ_ERROR)
 
 /*
  * Lab 3: Your code here for _alltraps
  */
+.global _alltraps
+_alltraps :
+  // Build trap frame as an argument of trap(struct Trapframe *tf)
+  // in trap.c , trapno and error code are set up by TRAPHANDLER
+  // and TRAPHANDLER_NOEC
+  pushl %ds
+  pushl %es
+  pushal
+  
+  // Set up data and per-cpu segment , cs and ss are set up by h/w
+  movw $(GD_KD), %ax
+  movw %ax, %ds
+  movw %ax, %es
+  movw %ax, %fs
+  movw %ax, %gs
 
+  // Call trap(struct Trapframe *tr)
+  pushl %esp
+  call trap
+  addl $4, %esp
+
+
+  
