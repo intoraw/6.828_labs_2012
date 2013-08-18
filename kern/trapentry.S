@@ -48,6 +48,8 @@
  */
 
 // check if has error code : http://pdos.csail.mit.edu/6.828/2012/readings/i386/s09_06.htm
+// or http://pdos.csail.mit.edu/6.828/2012/readings/ia32/IA32-3A.pdf Chapter 5,
+// table 5-1
 TRAPHANDLER_NOEC(idt_divide, T_DIVIDE) 
 TRAPHANDLER_NOEC(idt_debug, T_DEBUG) 
 TRAPHANDLER_NOEC(idt_nmi, T_NMI) 
