@@ -11,6 +11,7 @@
 #include <kern/syscall.h>
 #include <kern/console.h>
 
+
 // Print a string to the system console.
 // The string is exactly 'len' characters long.
 // Destroys the environment on memory errors.
@@ -69,7 +70,31 @@ syscall(uint32_t syscallno, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, 
 	// Call the function corresponding to the 'syscallno' parameter.
 	// Return any appropriate return value.
 	// LAB 3: Your code here.
+  
+  uint32_t ret = 0;
+  switch (syscallno) {
+  case SYS_cputs : 
+    sys_cputs((char *)a1, (size_t)a2);
+    break;
 
-	panic("syscall not implemented");
+  case SYS_cgetc :
+    ret = (uint32_t)sys_cgetc();
+    break;
+
+  case SYS_getenvid :
+    ret = (envid_t)sys_getenvid();
+    break;
+
+  case SYS_env_destroy :
+    ret = (uint32_t)sys_env_destroy((envid_t)a1);
+    break;
+  
+  default :
+    ret = -E_INVAL;
+    break;
+  }
+
+	//panic("syscall not implemented");
+  return ret;
 }
 

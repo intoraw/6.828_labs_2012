@@ -211,6 +211,12 @@ trap_dispatch(struct Trapframe *tf)
 
   if (tf->tf_trapno == T_BRKPT) {
     break_point_handler(tf);
+    return ;
+  }
+
+  if (tf->tf_trapno == T_SYSCALL) {
+    system_call_handler(tf);
+    return ;
   }
 
 	// Unexpected trap: The user process or the kernel has a bug.
@@ -299,3 +305,20 @@ break_point_handler(struct Trapframe *tf)
 {
   monitor(tf);
 }
+
+void
+system_call_handler(struct Trapframe *tf)
+{
+  uint32_t syscallno, a1, a2, a3, a4, a5;
+  syscallno = (tf->tf_regs).reg_eax;
+  a1 = (tf->tf_regs).reg_edx;
+  a2 = (tf->tf_regs).reg_ecx;
+  a3 = (tf->tf_regs).reg_ebx;
+  a4 = (tf->tf_regs).reg_edi;
+  a5 = (tf->tf_regs).reg_esi;
+  (tf->tf_regs).reg_eax = (uint32_t)syscall(syscallno, a1, a2, a3, a4, a5);
+}
+
+
+
+
