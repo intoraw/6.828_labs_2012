@@ -1,0 +1,60 @@
+[zork@arch my_jos]$ git merge lab3
+Auto-merging lib/syscall.c
+CONFLICT (add/add): Merge conflict in lib/syscall.c   ****
+Auto-merging lib/printfmt.c
+CONFLICT (add/add): Merge conflict in lib/printfmt.c  *** 
+Auto-merging lib/libmain.c
+CONFLICT (add/add): Merge conflict in lib/libmain.c   ***
+Auto-merging lib/console.c
+CONFLICT (add/add): Merge conflict in lib/console.c   ***
+Auto-merging lib/Makefrag
+CONFLICT (add/add): Merge conflict in lib/Makefrag        ***
+Auto-merging kern/trapentry.S
+CONFLICT (add/add): Merge conflict in kern/trapentry.S    ***
+Auto-merging kern/trap.h
+CONFLICT (add/add): Merge conflict in kern/trap.h         ***
+Auto-merging kern/trap.c
+CONFLICT (add/add): Merge conflict in kern/trap.c         ***
+Auto-merging kern/syscall.c
+CONFLICT (add/add): Merge conflict in kern/syscall.c      ***
+Auto-merging kern/pmap.h
+CONFLICT (add/add): Merge conflict in kern/pmap.h         ***
+Auto-merging kern/pmap.c
+CONFLICT (add/add): Merge conflict in kern/pmap.c         ***
+Auto-merging kern/monitor.c
+CONFLICT (add/add): Merge conflict in kern/monitor.c      ***
+Auto-merging kern/kdebug.c
+CONFLICT (add/add): Merge conflict in kern/kdebug.c       ***
+Auto-merging kern/init.c
+CONFLICT (add/add): Merge conflict in kern/init.c         *** 
+Auto-merging kern/env.h
+CONFLICT (add/add): Merge conflict in kern/env.h          ***
+Auto-merging kern/env.c
+CONFLICT (add/add): Merge conflict in kern/env.c          ***
+Auto-merging kern/console.c
+CONFLICT (add/add): Merge conflict in kern/console.c      ***
+Auto-merging kern/Makefrag
+CONFLICT (add/add): Merge conflict in kern/Makefrag       ***
+Auto-merging inc/trap.h
+CONFLICT (add/add): Merge conflict in inc/trap.h          ***
+Auto-merging inc/syscall.h
+CONFLICT (add/add): Merge conflict in inc/syscall.h       ***
+Auto-merging inc/memlayout.h
+CONFLICT (add/add): Merge conflict in inc/memlayout.h     ***
+Auto-merging inc/lib.h
+CONFLICT (add/add): Merge conflict in inc/lib.h           **
+Auto-merging inc/error.h
+CONFLICT (add/add): Merge conflict in inc/error.h         ***
+Auto-merging inc/env.h
+CONFLICT (add/add): Merge conflict in inc/env.h           ***
+Auto-merging gradelib.py
+CONFLICT (add/add): Merge conflict in gradelib.py         ***
+Auto-merging conf/lab.mk
+CONFLICT (add/add): Merge conflict in conf/lab.mk         ***
+Auto-merging conf/env.mk
+CONFLICT (add/add): Merge conflict in conf/env.mk         ***
+Auto-merging GNUmakefile
+CONFLICT (add/add): Merge conflict in GNUmakefile         ***
+Auto-merging .gdbinit.tmpl
+CONFLICT (add/add): Merge conflict in .gdbinit.tmpl       
+Automatic merge failed; fix conflicts and then commit the result.

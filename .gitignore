@@ -1,17 +1,16 @@
-# Object files
-*.o
-
-# Libraries
-*.lib
-*.a
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
+/obj
+/jos.in
+/jos.log
+/jos.out
+/jos.out.*
+/jos.cmd
+/.gdbinit
+/wget.log
+/qemu.pcap
+/qemu.pcap.*
+/qemu.out
+/qemu.log
+/gradelib.pyc
+/lab?-handin.tar.gz
+/lab?/
+/sol?/
