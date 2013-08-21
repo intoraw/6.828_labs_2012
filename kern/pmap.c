@@ -314,13 +314,19 @@ page_init(void)
   i = 0;
   pages[i].pp_ref = 1;
   pages[i].pp_link = NULL;
-  
+
   // 2)
   i = 1;
   for ( ; i < PGNUM(IOPHYSMEM); i ++) {
-    pages[i].pp_ref = 0;
-    pages[i].pp_link = page_free_list;
-    page_free_list = &pages[i];
+    // LAB 4 mark the physical page at MPENTRY_PADDR as in use.
+    if ( i == PGNUM(MPENTRY_PADDR) ) {
+      pages[i].pp_ref = 1;
+      pages[i].pp_link = NULL;
+    } else {
+      pages[i].pp_ref = 0;
+      pages[i].pp_link = page_free_list;
+      page_free_list = &pages[i];
+    }
   }
   
   // 3)
@@ -632,12 +638,13 @@ mmio_map_region(physaddr_t pa, size_t size)
 	// Hint: The staff solution uses boot_map_region.
 	//
 	// Your code here:
+  void * ret = (void*)base;
   size = ROUNDUP(size, PGSIZE);
   if (base + size > MMIOLIM)
     panic("mmio_map_region : reservation overflow.\n");
   boot_map_region(kern_pgdir , base, size, pa, PTE_PCD | PTE_PWT);
   base += size;
-  return (void*)base;
+  return ret;
 	//panic("mmio_map_region not implemented");
 }
 
