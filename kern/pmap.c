@@ -648,9 +648,9 @@ mmio_map_region(physaddr_t pa, size_t size)
 	// Your code here:
   void * ret = (void*)base;
   size = ROUNDUP(size, PGSIZE);
-  if (base + size > MMIOLIM)
+  if (base + size > MMIOLIM || base + size < base )
     panic("mmio_map_region : reservation overflow.\n");
-  boot_map_region(kern_pgdir , base, size, pa, PTE_PCD | PTE_PWT);
+  boot_map_region(kern_pgdir , base, size, pa, PTE_PCD | PTE_PWT | PTE_W);
   base += size;
   return ret;
 	//panic("mmio_map_region not implemented");
