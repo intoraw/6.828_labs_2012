@@ -231,6 +231,21 @@ trap_dispatch(struct Trapframe *tf)
 {
 	// Handle processor exceptions.
 	// LAB 3: Your code here.
+  if (tf->tf_trapno == T_PGFLT) {
+    page_fault_handler(tf);
+    return ;
+  }
+
+  if (tf->tf_trapno == T_BRKPT) {
+    break_point_handler(tf);
+    return ;
+  }
+
+  if (tf->tf_trapno == T_SYSCALL) {
+    system_call_handler(tf);
+    return ;
+  }
+
 
 	// Handle spurious interrupts
 	// The hardware sometimes raises these because of noise on the
@@ -244,20 +259,8 @@ trap_dispatch(struct Trapframe *tf)
 	// Handle clock interrupts. Don't forget to acknowledge the
 	// interrupt using lapic_eoi() before calling the scheduler!
 	// LAB 4: Your code here.
-
-
-  if (tf->tf_trapno == T_PGFLT) {
-    page_fault_handler(tf);
-    return ;
-  }
-
-  if (tf->tf_trapno == T_BRKPT) {
-    break_point_handler(tf);
-    return ;
-  }
-
-  if (tf->tf_trapno == T_SYSCALL) {
-    system_call_handler(tf);
+  if (tf->tf_trapno == IRQ_OFFSET + IRQ_TIMER){
+    lapic_eoi();
     return ;
   }
 
@@ -298,6 +301,7 @@ trap(struct Trapframe *tf)
 		// serious kernel work.
 		// LAB 4: Your code here.
 		assert(curenv);
+    lock_kernel();
 
 		// Garbage collect if current enviroment is a zombie
 		if (curenv->env_status == ENV_DYING) {

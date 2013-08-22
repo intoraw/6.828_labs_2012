@@ -558,8 +558,11 @@ env_run(struct Env *e)
   curenv->env_runs += 1;
   lcr3(PADDR(curenv->env_pgdir));
   
+  // LAB 4 release the lock right before switching to user mode
+  unlock_kernel();
+
   // Step 2
   env_pop_tf(&curenv->env_tf);
-	panic("env_run not yet implemented");
+	//panic("env_run not yet implemented");
 }
 
