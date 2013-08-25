@@ -356,7 +356,6 @@ page_fault_handler(struct Trapframe *tf)
     return ;
   }
 
-
 	// We've already handled kernel-mode exceptions, so if we get here,
 	// the page fault happened in user mode.
 
@@ -389,6 +388,45 @@ page_fault_handler(struct Trapframe *tf)
 	//   (the 'tf' variable points at 'curenv->env_tf').
 
 	// LAB 4: Your code here.
+  struct PageInfo *pp;
+  int ret;
+  // if upcall exist 
+  if (curenv->env_pgfault_upcall) {
+    // check if user exception stack exist. considering that at 
+    // env_create calls load_icode, and load_icode doesnot allocate
+    // user exception stack. So, this is necessary. Otherwise, PTE of 
+    // UXSTACKTOP has PTE_P not set, a PGFLT will be generated.
+    pp = page_lookup(curenv->env_pgdir, (void*)(UXSTACKTOP-PGSIZE), 0);
+    if (!pp) {
+      // destory this env.
+      cprintf("physical page of user exception stack not allocated.\n");
+      cprintf("[%08x] user fault va %08x ip %08x\n",
+        curenv->env_id, fault_va, tf->tf_eip);
+      print_trapframe(tf);
+      env_destroy(curenv);
+    }
+    
+    // insert UTrapframe into exception stack
+    struct UTrapframe *utf;
+    if (tf->tf_esp >= UXSTACKTOP - PGSIZE && tf->tf_esp < UXSTACKTOP ) {
+      utf = (struct UTrapframe *)(tf->tf_esp - 4 - sizeof(struct UTrapframe));
+    } else {
+      utf = (struct UTrapframe *)(UXSTACKTOP-PGSIZE);
+    }
+    
+    user_mem_assert(curenv, utf, sizeof(struct UTrapframe), PTE_U | PTE_W | PTE_P);
+    utf->utf_esp = tf->tf_esp;
+    utf->utf_eflags = tf->tf_eflags;
+    utf->utf_eip = tf->tf_eip;
+    utf->utf_regs = tf->tf_regs;
+    utf->utf_err = tf->tf_err;
+    utf->utf_fault_va = fault_va;
+    
+    // at trap(), if in user mode, tf = &curenv->env_tf;
+    tf->tf_esp = (uintptr_t)utf;
+    tf->tf_eip = (uintptr_t)curenv->env_pgfault_upcall;
+    env_run(curenv);
+  }
 
 	// Destroy the environment that caused the fault.
 	cprintf("[%08x] user fault va %08x ip %08x\n",
