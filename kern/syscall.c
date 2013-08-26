@@ -425,6 +425,10 @@ syscall(uint32_t syscallno, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, 
     ret = (uint32_t)sys_env_set_status((envid_t)a1, (int)a2);
     break;
   
+  case SYS_env_set_pgfault_upcall : 
+    ret = (uint32_t)sys_env_set_pgfault_upcall((envid_t)a1, (void*)a2);
+    break;
+  
   default :
     ret = -E_INVAL;
     break;

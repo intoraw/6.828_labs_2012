@@ -408,10 +408,10 @@ page_fault_handler(struct Trapframe *tf)
     
     // insert UTrapframe into exception stack
     struct UTrapframe *utf;
-    if (tf->tf_esp >= UXSTACKTOP - PGSIZE && tf->tf_esp < UXSTACKTOP ) {
+    if ((uintptr_t)(UXSTACKTOP - PGSIZE) <= tf->tf_esp && tf->tf_esp < (uintptr_t)UXSTACKTOP ) {
       utf = (struct UTrapframe *)(tf->tf_esp - 4 - sizeof(struct UTrapframe));
     } else {
-      utf = (struct UTrapframe *)(UXSTACKTOP-PGSIZE);
+      utf = (struct UTrapframe *)(UXSTACKTOP - sizeof(struct UTrapframe));
     }
     
     user_mem_assert(curenv, utf, sizeof(struct UTrapframe), PTE_U | PTE_W | PTE_P);
