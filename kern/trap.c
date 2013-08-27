@@ -399,7 +399,8 @@ page_fault_handler(struct Trapframe *tf)
     pp = page_lookup(curenv->env_pgdir, (void*)(UXSTACKTOP-PGSIZE), 0);
     if (!pp) {
       // destory this env.
-      cprintf("[%08x] physical page of user exception stack not allocated.\n", curenv->env_id);
+      cprintf("[%08x] physical page of user exception stack not allocated.\n", 
+        curenv->env_id);
       cprintf("[%08x] user fault va %08x ip %08x\n",
         curenv->env_id, fault_va, tf->tf_eip);
       print_trapframe(tf);
@@ -408,13 +409,15 @@ page_fault_handler(struct Trapframe *tf)
     
     // insert UTrapframe into exception stack
     struct UTrapframe *utf;
-    if ((uintptr_t)(UXSTACKTOP - PGSIZE) <= tf->tf_esp && tf->tf_esp < (uintptr_t)UXSTACKTOP ) {
+    if ((uintptr_t)(UXSTACKTOP - PGSIZE) <= tf->tf_esp && 
+      tf->tf_esp < (uintptr_t)UXSTACKTOP ) {
       utf = (struct UTrapframe *)(tf->tf_esp - 4 - sizeof(struct UTrapframe));
     } else {
       utf = (struct UTrapframe *)(UXSTACKTOP - sizeof(struct UTrapframe));
     }
     
-    user_mem_assert(curenv, utf, sizeof(struct UTrapframe), PTE_U | PTE_W | PTE_P);
+    user_mem_assert(curenv, utf, sizeof(struct UTrapframe), 
+      PTE_U | PTE_W | PTE_P);
     utf->utf_esp = tf->tf_esp;
     utf->utf_eflags = tf->tf_eflags;
     utf->utf_eip = tf->tf_eip;

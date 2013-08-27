@@ -205,7 +205,8 @@ sys_page_alloc(envid_t envid, void *va, int perm)
     return -E_INVAL;
 
   // check perm 
-  if (((perm | PTE_SYSCALL) != PTE_SYSCALL) || ((perm | PTE_U | PTE_P) != perm)) 
+  if (((perm | PTE_SYSCALL) != PTE_SYSCALL) || 
+    ((perm | PTE_U | PTE_P) != perm)) 
     return -E_INVAL;
 
   // alloc page and memset to ZERO
