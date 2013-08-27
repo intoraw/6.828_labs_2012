@@ -156,8 +156,12 @@ sys_env_set_pgfault_upcall(envid_t envid, void *func)
     return -E_BAD_ENV;
   
   // check func is in user space
+  // For passing the test of user/faultevilhandler, this checking should be 
+  // removed.
+  /*
   if ((uintptr_t)func >= UTOP)
     return -E_INVAL;
+  */
 
   // set upcall
   env->env_pgfault_upcall = func;

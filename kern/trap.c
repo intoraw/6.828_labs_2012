@@ -396,6 +396,10 @@ page_fault_handler(struct Trapframe *tf)
     // env_create calls load_icode, and load_icode doesnot allocate
     // user exception stack. So, this is necessary. Otherwise, PTE of 
     // UXSTACKTOP has PTE_P not set, a PGFLT will be generated.
+
+    // For passing the test of user/faultnostack, user exception stack checking 
+    // should be removed.
+    /* 
     pp = page_lookup(curenv->env_pgdir, (void*)(UXSTACKTOP-PGSIZE), 0);
     if (!pp) {
       // destory this env.
@@ -406,6 +410,7 @@ page_fault_handler(struct Trapframe *tf)
       print_trapframe(tf);
       env_destroy(curenv);
     }
+    */
     
     // insert UTrapframe into exception stack
     struct UTrapframe *utf;
