@@ -164,12 +164,12 @@ trap_init_percpu(void)
 	// user space on that CPU.
 	//
 	// LAB 4: Your code here:
-  thiscpu->cpu_ts.ts_esp0 = KSTACKTOP - (thiscpu->cpu_id) * (KSTKSIZE + KSTKGAP);
+  thiscpu->cpu_ts.ts_esp0 = KSTACKTOP - (thiscpu->cpu_id)*(KSTKSIZE + KSTKGAP);
   thiscpu->cpu_ts.ts_ss0 = GD_KD;
 
 	// Initialize the TSS slot of the gdt.
-	gdt[(GD_TSS0 >> 3) + thiscpu->cpu_id] = SEG16(STS_T32A, (uint32_t) (&thiscpu->cpu_ts),
-					sizeof(struct Taskstate), 0);
+	gdt[(GD_TSS0 >> 3) + thiscpu->cpu_id] = SEG16(STS_T32A, 
+          (uint32_t) (&thiscpu->cpu_ts), sizeof(struct Taskstate), 0);
 	gdt[(GD_TSS0 >> 3) + thiscpu->cpu_id].sd_s = 0;
 
 	// Load the TSS selector (like other segment selectors, the
@@ -399,7 +399,7 @@ page_fault_handler(struct Trapframe *tf)
     pp = page_lookup(curenv->env_pgdir, (void*)(UXSTACKTOP-PGSIZE), 0);
     if (!pp) {
       // destory this env.
-      cprintf("physical page of user exception stack not allocated.\n");
+      cprintf("[%08x] physical page of user exception stack not allocated.\n", curenv->env_id);
       cprintf("[%08x] user fault va %08x ip %08x\n",
         curenv->env_id, fault_va, tf->tf_eip);
       print_trapframe(tf);
