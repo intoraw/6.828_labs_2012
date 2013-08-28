@@ -30,10 +30,16 @@ sched_yield(void)
 
 	// LAB 4: Your code here.
   size_t i = 0;
+  size_t nxt = 0;
   idle = NULL;
-  for ( ;i < NENV;i ++){
-    if (envs[i].env_status == ENV_RUNNABLE) {
-      idle = &envs[i];
+  
+  if (curenv) 
+    nxt = ENVX(ENVX(curenv->env_id));
+
+  for ( ;i < NENV;i ++) {
+    nxt = (nxt + 1) & (NENV-1);
+    if (envs[nxt].env_status == ENV_RUNNABLE) {
+      idle = &envs[nxt];
       break;
     }
   }
