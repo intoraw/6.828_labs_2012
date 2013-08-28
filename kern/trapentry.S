@@ -76,12 +76,22 @@ TRAPHANDLER_NOEC(idt_syscall, T_SYSCALL)
 TRAPHANDLER(idt_default, T_DEFAULT) 
 
 # H/W IRQ
-TRAPHANDLER_NOEC(idt_irq_timer, IRQ_OFFSET + IRQ_TIMER)
-TRAPHANDLER_NOEC(idt_irq_kbd, IRQ_OFFSET + IRQ_KBD)
-TRAPHANDLER_NOEC(idt_irq_serial, IRQ_OFFSET + IRQ_SERIAL)
-TRAPHANDLER_NOEC(idt_irq_spurious, IRQ_OFFSET + IRQ_SPURIOUS)
-TRAPHANDLER_NOEC(idt_irq_ide, IRQ_OFFSET + IRQ_IDE)
-TRAPHANDLER_NOEC(idt_irq_error, IRQ_OFFSET + IRQ_ERROR)
+TRAPHANDLER_NOEC(idt_irq0, IRQ_OFFSET + 0)
+TRAPHANDLER_NOEC(idt_irq1, IRQ_OFFSET + 1)
+TRAPHANDLER_NOEC(idt_irq2, IRQ_OFFSET + 2)
+TRAPHANDLER_NOEC(idt_irq3, IRQ_OFFSET + 3)
+TRAPHANDLER_NOEC(idt_irq4, IRQ_OFFSET + 4)
+TRAPHANDLER_NOEC(idt_irq5, IRQ_OFFSET + 5)
+TRAPHANDLER_NOEC(idt_irq6, IRQ_OFFSET + 6)
+TRAPHANDLER_NOEC(idt_irq7, IRQ_OFFSET + 7)
+TRAPHANDLER_NOEC(idt_irq8, IRQ_OFFSET + 8)
+TRAPHANDLER_NOEC(idt_irq9, IRQ_OFFSET + 9)
+TRAPHANDLER_NOEC(idt_irq10, IRQ_OFFSET + 10)
+TRAPHANDLER_NOEC(idt_irq11, IRQ_OFFSET + 11)
+TRAPHANDLER_NOEC(idt_irq12, IRQ_OFFSET + 12)
+TRAPHANDLER_NOEC(idt_irq13, IRQ_OFFSET + 13)
+TRAPHANDLER_NOEC(idt_irq14, IRQ_OFFSET + 14)
+TRAPHANDLER_NOEC(idt_irq15, IRQ_OFFSET + 15)
 
 /*
  * Lab 3: Your code here for _alltraps
@@ -99,13 +109,11 @@ _alltraps :
   movw $(GD_KD), %ax
   movw %ax, %ds
   movw %ax, %es
-  movw %ax, %fs
-  movw %ax, %gs
+  //movw %ax, %fs
+  //movw %ax, %gs
 
   // Call trap(struct Trapframe *tr)
   pushl %esp
   call trap
-  addl $4, %esp
 
 
-  

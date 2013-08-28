@@ -95,44 +95,63 @@ trap_init(void)
   extern void idt_syscall();
   extern void idt_default(); 
 
-  extern void idt_irq_timer();
-  extern void idt_irq_kbd();
-  extern void idt_irq_serial();
-  extern void idt_irq_spurious();
-  extern void idt_irq_ide();
-  extern void idt_irq_error();
-
+  extern void idt_irq0();
+  extern void idt_irq1();
+  extern void idt_irq2();
+  extern void idt_irq3();
+  extern void idt_irq4();
+  extern void idt_irq5();
+  extern void idt_irq6();
+  extern void idt_irq7();
+  extern void idt_irq8();
+  extern void idt_irq9();
+  extern void idt_irq10();
+  extern void idt_irq11();
+  extern void idt_irq12();
+  extern void idt_irq13();
+  extern void idt_irq14();
+  extern void idt_irq15();
 
   int i ;
   for (i = 0;i < 256 ;i ++)
     SETGATE(idt[i], 0, GD_KT, idt_default, 0);
 
-  SETGATE(idt[T_DIVIDE], 1, GD_KT, idt_divide, 0);
-  SETGATE(idt[T_DEBUG], 1, GD_KT, idt_debug, 0);
+  SETGATE(idt[T_DIVIDE], 0, GD_KT, idt_divide, 0);
+  SETGATE(idt[T_DEBUG], 0, GD_KT, idt_debug, 0);
   SETGATE(idt[T_NMI], 0, GD_KT, idt_nmi, 0);
-  SETGATE(idt[T_BRKPT], 1, GD_KT, idt_brkpt, 3);
-  SETGATE(idt[T_OFLOW], 1, GD_KT, idt_oflow, 0);
-  SETGATE(idt[T_BOUND], 1, GD_KT, idt_bound, 0);
-  SETGATE(idt[T_ILLOP], 1, GD_KT, idt_illop, 0);
-  SETGATE(idt[T_DEVICE], 1, GD_KT, idt_device, 0);
-  SETGATE(idt[T_DBLFLT], 1, GD_KT, idt_dblflt, 0);
-  SETGATE(idt[T_TSS], 1, GD_KT, idt_tss, 0);
-  SETGATE(idt[T_SEGNP], 1, GD_KT, idt_segnp, 0);
-  SETGATE(idt[T_STACK], 1, GD_KT, idt_stack, 0);
-  SETGATE(idt[T_GPFLT], 1, GD_KT, idt_gpflt, 0);
-  SETGATE(idt[T_PGFLT], 1, GD_KT, idt_pgflt, 0);
-  SETGATE(idt[T_FPERR], 1, GD_KT, idt_fperr, 0);
-  SETGATE(idt[T_ALIGN], 1, GD_KT, idt_align, 0);
-  SETGATE(idt[T_MCHK], 1, GD_KT, idt_mchk, 0);
-  SETGATE(idt[T_SIMDERR], 1, GD_KT, idt_simderr, 0);
+  SETGATE(idt[T_BRKPT], 0, GD_KT, idt_brkpt, 3);
+  SETGATE(idt[T_OFLOW], 0, GD_KT, idt_oflow, 0);
+  SETGATE(idt[T_BOUND], 0, GD_KT, idt_bound, 0);
+  SETGATE(idt[T_ILLOP], 0, GD_KT, idt_illop, 0);
+  SETGATE(idt[T_DEVICE], 0, GD_KT, idt_device, 0);
+  SETGATE(idt[T_DBLFLT], 0, GD_KT, idt_dblflt, 0);
+  SETGATE(idt[T_TSS], 0, GD_KT, idt_tss, 0);
+  SETGATE(idt[T_SEGNP], 0, GD_KT, idt_segnp, 0);
+  SETGATE(idt[T_STACK], 0, GD_KT, idt_stack, 0);
+  SETGATE(idt[T_GPFLT], 0, GD_KT, idt_gpflt, 0);
+  SETGATE(idt[T_PGFLT], 0, GD_KT, idt_pgflt, 0);
+  SETGATE(idt[T_FPERR], 0, GD_KT, idt_fperr, 0);
+  SETGATE(idt[T_ALIGN], 0, GD_KT, idt_align, 0);
+  SETGATE(idt[T_MCHK], 0, GD_KT, idt_mchk, 0);
+  SETGATE(idt[T_SIMDERR], 0, GD_KT, idt_simderr, 0);
   SETGATE(idt[T_SYSCALL], 0, GD_KT, idt_syscall, 3);
   
-  SETGATE(idt[IRQ_OFFSET + IRQ_TIMER], 0, GD_KT, idt_irq_timer, 0);
-  SETGATE(idt[IRQ_OFFSET + IRQ_KBD], 0, GD_KT, idt_irq_kbd, 0);
-  SETGATE(idt[IRQ_OFFSET + IRQ_SERIAL], 0, GD_KT, idt_irq_serial, 0);
-  SETGATE(idt[IRQ_OFFSET + IRQ_SPURIOUS], 0, GD_KT, idt_irq_spurious, 0);
-  SETGATE(idt[IRQ_OFFSET + IRQ_IDE], 0, GD_KT, idt_irq_ide, 0);
-  SETGATE(idt[IRQ_OFFSET + IRQ_ERROR], 0, GD_KT, idt_irq_error, 0);
+  SETGATE(idt[IRQ_OFFSET + 0], 0, GD_KT, idt_irq0, 0);
+  SETGATE(idt[IRQ_OFFSET + 1], 0, GD_KT, idt_irq1, 0);
+  SETGATE(idt[IRQ_OFFSET + 2], 0, GD_KT, idt_irq2, 0);
+  SETGATE(idt[IRQ_OFFSET + 3], 0, GD_KT, idt_irq3, 0);
+  SETGATE(idt[IRQ_OFFSET + 4], 0, GD_KT, idt_irq4, 0);
+  SETGATE(idt[IRQ_OFFSET + 5], 0, GD_KT, idt_irq5, 0);
+  SETGATE(idt[IRQ_OFFSET + 6], 0, GD_KT, idt_irq5, 0);
+  SETGATE(idt[IRQ_OFFSET + 7], 0, GD_KT, idt_irq5, 0);
+  SETGATE(idt[IRQ_OFFSET + 8], 0, GD_KT, idt_irq5, 0);
+  SETGATE(idt[IRQ_OFFSET + 9], 0, GD_KT, idt_irq5, 0);
+  SETGATE(idt[IRQ_OFFSET + 10], 0, GD_KT, idt_irq5, 0);
+  SETGATE(idt[IRQ_OFFSET + 11], 0, GD_KT, idt_irq5, 0);
+  SETGATE(idt[IRQ_OFFSET + 12], 0, GD_KT, idt_irq5, 0);
+  SETGATE(idt[IRQ_OFFSET + 13], 0, GD_KT, idt_irq5, 0);
+  SETGATE(idt[IRQ_OFFSET + 14], 0, GD_KT, idt_irq5, 0);
+  SETGATE(idt[IRQ_OFFSET + 15], 0, GD_KT, idt_irq5, 0);
 
 	// Per-CPU setup 
 	trap_init_percpu();
