@@ -296,11 +296,45 @@ map_segment(envid_t child, uintptr_t va, size_t memsz,
 	return 0;
 }
 
+static int
+sharepage(envid_t envid, unsigned pn)
+{
+  int r;
+
+  void * va = (void *) (pn << PGSHIFT);
+
+  // check page dir PTE_P exist
+  if (!(uvpd[PDX(pn << PGSHIFT)] & PTE_P )) 
+    panic("sharepage : page dir PTE_P is not set.\n");
+
+  // check page is PTE_W or PTE_COW
+  if (!(uvpt[pn] & ( PTE_SHARE)))
+    panic("sharepage : page is not PTE_SHARE.\n");
+
+  // if PTE_SHARE, just copy the pte to child.
+  r = sys_page_map(0, va, envid, va, uvpt[pn] & PTE_SYSCALL);
+  if (r < 0)
+    panic("sharepage : sys_page_map error : %e.\n",r);
+
+  return 0;
+}
+
+
 // Copy the mappings for shared pages into the child address space.
 static int
 copy_shared_pages(envid_t child)
 {
 	// LAB 5: Your code here.
+  uintptr_t va;
+  int r;
+
+  // Copy shared pages.
+  for (va = UTEXT; va < USTACKTOP; va += PGSIZE) {
+    if ((uvpd[PDX(va)] & PTE_P) && (uvpt[PGNUM(va)] & PTE_P) &&
+        (uvpt[PGNUM(va)] & PTE_SHARE) && (uvpt[PGNUM(va)] & PTE_U))
+      sharepage(child, PGNUM(va));
+  }
+
 	return 0;
 }
 

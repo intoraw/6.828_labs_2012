@@ -88,18 +88,25 @@ duppage(envid_t envid, unsigned pn)
     panic("duppage : page dir PTE_P is not set.\n");
 
   // check page is PTE_W or PTE_COW
-  if (!(uvpt[pn] & ( PTE_W | PTE_COW )))
-    panic("duppage : page is not PTE_W or PTE_COW.\n");
+  if (!(uvpt[pn] & ( PTE_W | PTE_COW | PTE_SHARE)))
+    panic("duppage : page is not PTE_W or PTE_COW or PTE_SHARE.\n");
 
-  // map child's page as PTE_COW
-  r = sys_page_map(0, va, envid, va, PTE_U | PTE_COW | PTE_P);
-  if (r < 0)
-    panic("duppage : sys_page_map error : %e.\n",r);
- 
-  // remap parent's page as PTE_COW, make PTE_W invalid.
-  r = sys_page_map(0, va, 0, va, PTE_U | PTE_COW | PTE_P);
-  if (r < 0) 
-    panic("dupage : sys_page_map erro : %e.\n", r);
+  if (uvpt[pn] & PTE_SHARE) {
+    // if PTE_SHARE, just copy the pte to child.
+    r = sys_page_map(0, va, envid, va, uvpt[pn] & PTE_SYSCALL);
+    if (r < 0)
+      panic("duppage : sys_page_map error : %e.\n",r);
+  } else {
+    // map child's page as PTE_COW
+    r = sys_page_map(0, va, envid, va, PTE_U | PTE_COW | PTE_P);
+    if (r < 0)
+      panic("duppage : sys_page_map error : %e.\n",r);
+   
+    // remap parent's page as PTE_COW, make PTE_W invalid.
+    r = sys_page_map(0, va, 0, va, PTE_U | PTE_COW | PTE_P);
+    if (r < 0) 
+      panic("dupage : sys_page_map erro : %e.\n", r);
+  }
 
 	return 0;
 }
