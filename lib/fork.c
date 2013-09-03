@@ -79,6 +79,7 @@ static int
 duppage(envid_t envid, unsigned pn)
 {
 	int r;
+  int perm;
 
 	// LAB 4: Your code here.
   void * va = (void *) (pn << PGSHIFT);
@@ -87,25 +88,30 @@ duppage(envid_t envid, unsigned pn)
   if (!(uvpd[PDX(pn << PGSHIFT)] & PTE_P )) 
     panic("duppage : page dir PTE_P is not set.\n");
 
-  // check page is PTE_W or PTE_COW
-  if (!(uvpt[pn] & ( PTE_W | PTE_COW | PTE_SHARE)))
-    panic("duppage : page is not PTE_W or PTE_COW or PTE_SHARE.\n");
-
   if (uvpt[pn] & PTE_SHARE) {
     // if PTE_SHARE, just copy the pte to child.
     r = sys_page_map(0, va, envid, va, uvpt[pn] & PTE_SYSCALL);
     if (r < 0)
       panic("duppage : sys_page_map error : %e.\n",r);
-  } else {
+  } else if(uvpt[pn] & (PTE_W | PTE_COW)){
     // map child's page as PTE_COW
-    r = sys_page_map(0, va, envid, va, PTE_U | PTE_COW | PTE_P);
+    perm = PTE_U | PTE_COW | PTE_P | (uvpt[pn] & PTE_AVAIL);
+    r = sys_page_map(0, va, envid, va, perm);
     if (r < 0)
       panic("duppage : sys_page_map error : %e.\n",r);
    
     // remap parent's page as PTE_COW, make PTE_W invalid.
-    r = sys_page_map(0, va, 0, va, PTE_U | PTE_COW | PTE_P);
+    r = sys_page_map(0, va, 0, va, perm);
     if (r < 0) 
       panic("dupage : sys_page_map erro : %e.\n", r);
+  } else {
+    // for RO pages, just copy the page mapping.
+    // 因为之前没有考虑到这个情况，导致在make run-icode的时候
+    // sh.c 中 fork() 函数在子进程中异常运行，现象是在 fork结束
+    // 之后，调度到子进程时候，不是从trapframe 保存的地方运行。
+    r = sys_page_map(0, va, envid, va, uvpt[pn] & PTE_SYSCALL);
+    if (r < 0)
+      panic("duppage : sys_page_map error : %e.\n",r);
   }
 
 	return 0;
@@ -161,7 +167,7 @@ fork(void)
   // first see if pdt & PTE_P or not
   for (va = UTEXT ; va < USTACKTOP; va += PGSIZE){
     if ((uvpd[PDX(va)] & PTE_P) && (uvpt[PGNUM(va)] & PTE_P) && 
-        (uvpt[PGNUM(va)] & PTE_U) && (uvpt[PGNUM(va)] & (PTE_W | PTE_COW)))
+        (uvpt[PGNUM(va)] & PTE_U) )
       duppage(envid, PGNUM(va));
     
     // For pages that are not PTE_W or PTE_COW, just ignore it, some of 
